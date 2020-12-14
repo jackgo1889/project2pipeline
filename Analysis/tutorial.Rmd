@@ -74,7 +74,7 @@ rf_demo <- data.frame("k_2" = k_2,
 setwd("../Output/Results")
 
 #saving rf_table to results folder
-saveRDS(rf_table, file = "rf_table.rds")
+write.csv(rf_table, "rf_table.csv")
 
 #saving rf_demo to results folder
 write.csv(rf_demo, "rf_demo.csv")
