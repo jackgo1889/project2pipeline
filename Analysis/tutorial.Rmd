@@ -1,0 +1,79 @@
+---
+title: "Project 2: mystatspackage Tutorial"
+author: "Jack Go"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{mystatspackage Tutorial}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+  
+# 5. A tutorial for `my_rf_cv`
+
+```{r}
+library(ggplot2)
+library(magrittr)
+library(randomForest)
+
+load("/Users/jackgo/One\ Drive\ -\ UW/AUTUMN_2020/STAT_302/projects/project_2/mystatspackage/data/my_penguins.rda")
+
+source("/Users/jackgo/One\ Drive\ -\ UW/AUTUMN_2020/STAT_302/projects/project_2/project2pipeline/Code/my_rf_cv.R")
+```
+
+We will again be using the`my_penguins` data to predict `body_mass_g` using covariates `bill_length_mm`, `bill_depth_mm`, `fipper_length_mm`. We will use a k value of 2, 5, and 10 thirty times each. Then, using ggplot, we will compare the 3 values with 3 boxplots, each representing a different k value.
+
+```{r}
+#creating vectors to store outputs in
+k_2 <- c()
+k_5 <- c()
+k_10 <- c()
+
+#storing outputs in vectors
+for (i in 1:30) {
+  k_2[i] <- my_rf_cv(2)
+  k_5[i] <- my_rf_cv(5)
+  k_10[i] <- my_rf_cv(10)
+}
+```
+
+```{r}
+#storing vectors into data frame
+rf_demonstration <- data.frame("k_value" = rep(c("Two", "Five", "Ten"), each = 30), 
+                               "MSE" = c(k_2, k_5, k_10))
+
+#creating boxplots based off data frames
+rf_plot <- ggplot(data = rf_demonstration, aes(x = reorder(k_value, MSE), y = MSE, group = k_value)) + 
+  geom_boxplot(fill = "lightblue") +
+  theme_bw(base_size = 8) +
+  labs(title = "CV Estimated MSE for Different k-values", x = "k-value", y = "MSE") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+#creating a table to store mean and standard deviation
+rf_table <- data.frame("Mean" = c(mean(k_2), mean(k_5), mean(k_10)), 
+                       "Standard Deviation" = c(sd(k_2), sd(k_5), sd(k_10)))
+rownames(rf_table) <- c("k = 2", "k = 5", "k = 10")
+
+rf_table
+rf_plot
+```
+
+```{r}
+#saving rf_plot to figures folder
+ggsave("rf_plot.png", rf_plot, path = "../Output/Figures")
+
+#creating data frame to save in results folder
+rf_demo <- data.frame("k_2" = k_2,
+                      "k_5" = k_5,
+                      "k_10" = k_10)
+
+#changing working directory to results folder
+setwd("../Output/Results")
+
+#saving rf_table to results folder
+saveRDS(rf_table, file = "rf_table.rds")
+
+#saving rf_demo to results folder
+write.csv(rf_demo, "rf_demo.csv")
+```
+
+As k increases, the mean values and standard deviations of MSE both increase. This is because as the complexity of the model increases, there is more variability. At k = 2, the data is underfitted; the model should be more linear in nature and therefore, not much variability, but lots of bias. At k = 10, the data is overfitted; the model is much more complex in nature, and fits the data way too well to be true. As a result, while there is little bias, variability is very high, which is reflected in the increase in standard deviation.
