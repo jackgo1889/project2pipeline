@@ -14,6 +14,7 @@ vignette: >
 library(ggplot2)
 library(magrittr)
 library(randomForest)
+library(tibble)
 
 load("/Users/jackgo/One\ Drive\ -\ UW/AUTUMN_2020/STAT_302/projects/project_2/mystatspackage/data/my_penguins.rda")
 
@@ -52,6 +53,9 @@ rf_plot <- ggplot(data = rf_demonstration, aes(x = reorder(k_value, MSE), y = MS
 rf_table <- data.frame("Mean" = c(mean(k_2), mean(k_5), mean(k_10)), 
                        "Standard Deviation" = c(sd(k_2), sd(k_5), sd(k_10)))
 rownames(rf_table) <- c("k = 2", "k = 5", "k = 10")
+
+#making rf_table a tibble
+rf_table <- as_tibble(rf_table)
 
 rf_table
 rf_plot
