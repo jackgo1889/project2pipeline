@@ -16,7 +16,7 @@ library(magrittr)
 library(randomForest)
 library(tibble)
 
-load("/Users/jackgo/One\ Drive\ -\ UW/AUTUMN_2020/STAT_302/projects/project_2/mystatspackage/data/my_penguins.rda")
+load("/Users/jackgo/One\ Drive\ -\ UW/AUTUMN_2020/STAT_302/projects/project_2/project2pipeline/Data/my_penguins.rda")
 
 source("/Users/jackgo/One\ Drive\ -\ UW/AUTUMN_2020/STAT_302/projects/project_2/project2pipeline/Code/my_rf_cv.R")
 ```
